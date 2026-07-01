@@ -1,0 +1,210 @@
+
+paths:
+  video_path: data/video/input_video.mp4
+  frames_dir: data/frames
+  reference_dir: data/references
+  gt_json: data/annotations/gt.json
+
+  output_internal_json: outputs/json/results_internal.json
+  output_official_json: outputs/json/results_official.json
+  output_json: outputs/json/results_internal.json
+
+  frame_log_csv: outputs/csv/frame_log.csv
+  proposal_log_csv: outputs/csv/proposal_log.csv
+  similarity_log_csv: outputs/csv/similarity_log.csv
+  candidate_log_csv: outputs/csv/candidate_log.csv
+  fusion_log_csv: outputs/csv/fusion_log.csv
+  geometry_log_csv: outputs/csv/geometry_log.csv
+  track_log_csv: outputs/csv/track_log.csv
+
+  evaluation_json: outputs/json/evaluation_summary.json
+  per_reference_csv: outputs/csv/per_reference_metrics.csv
+  fp_csv: outputs/csv/fp_records.csv
+  fn_csv: outputs/csv/fn_records.csv
+
+  visualization_dir: outputs/visualizations
+  debug_frame_dir: outputs/debug/frame_json
+  debug_fp_dir: outputs/debug/fp_gallery
+  debug_fn_dir: outputs/debug/fn_gallery
+  debug_topk_dir: outputs/debug/topk_gallery
+  debug_proposal_dir: outputs/debug/proposal_gallery
+  cache_dir: outputs/cache
+  config_snapshot_dir: outputs/config_snapshots
+
+runtime:
+  device: auto
+  deterministic: true
+  seed: 42
+  save_debug_outputs: true
+  save_visualizations: true
+  fail_fast: false
+  run_name: v5_0_1_recall_balanced_grid
+
+detector:
+  model_path: models/yolov8n.pt
+  conf_threshold: 0.04
+  iou_threshold: 0.50
+  max_det: 100
+  top_k_candidates: 60
+  min_bbox_area: 32
+  max_bbox_area_ratio: 0.70
+  min_aspect_ratio: 0.12
+  max_aspect_ratio: 7.00
+
+proposal:
+  enabled_sources: ["yolo", "grid", "local"]
+  max_total_candidates_per_frame: 160
+  nms_iou_threshold: 0.65
+  min_bbox_area: 32
+  max_bbox_area_ratio: 0.70
+  min_aspect_ratio: 0.12
+  max_aspect_ratio: 7.00
+
+grid_proposal:
+  enabled: true
+  window_sizes: [48, 64, 96, 128, 192, 256, 384]
+  stride_ratio: 0.50
+  aspect_ratios: [0.75, 1.00, 1.33, 1.78]
+  max_grid_candidates: 120
+  balanced_sampling: true
+  spatial_bins_x: 4
+  spatial_bins_y: 4
+
+contour_proposal:
+  enabled: false
+
+sam_proposal:
+  enabled: false
+
+embedding:
+  model_name: facebook/dinov2-small
+  input_size: 224
+  use_fp16: true
+  normalize_embeddings: true
+  pooling: cls
+  reference_extensions: [".jpg", ".jpeg", ".png", ".JPG", ".JPEG", ".PNG"]
+  cache_reference_embeddings: true
+
+  template_pad_ratio: 0.08
+  template_brightness_factors: [0.90, 1.10]
+  template_contrast_factors: [0.90, 1.10]
+
+  use_gray_templates: false
+  use_edge_templates: false
+
+matching:
+  context_expand_ratio: 0.15
+
+  tight_weight: 0.75
+  context_weight: 0.25
+
+  detector_conf_floor: 0.00
+  min_similarity: 0.24
+  min_margin: 0.00
+
+  strong_accept_similarity: 0.38
+  strong_accept_margin: 0.00
+
+  ambiguity_score_lower: 0.24
+  ambiguity_score_upper: 0.40
+  ambiguity_margin_upper: 0.10
+
+  top_k_per_reference_after_similarity: 15
+  top_k_for_geometry: 3
+  top_k_for_mellin: 0
+
+  allow_multiple_same_reference_per_frame: false
+  same_reference_iou_threshold: 0.60
+
+geometry:
+  enabled: true
+  pretrained: outdoor
+  run_on_ambiguous_only: false
+  run_on_topk: true
+  top_k_for_geometry: 3
+  min_appearance_for_geometry: 0.18
+
+  min_matches: 8
+  min_inlier_ratio: 0.25
+  max_reproj_error: 4.0
+  max_image_size: 480
+
+  geom_score_weight: 0.15
+  appearance_score_weight: 0.80
+
+mellin:
+  enabled: false
+  top_k_for_mellin: 0
+  mellin_score_weight: 0.0
+
+fusion:
+  appearance_score_weight: 0.80
+  geometry_score_weight: 0.15
+  temporal_score_weight: 0.05
+  mellin_score_weight: 0.00
+
+  min_final_score: 0.30
+  min_final_margin: 0.00
+
+  min_final_score_with_geometry: 0.24
+  strong_visual_accept_score: 0.38
+  strong_visual_min_margin: 0.00
+
+  yolo_source_bonus: 0.02
+  grid_source_bonus: 0.00
+  local_source_penalty: 0.04
+
+tracking:
+  enabled: true
+  max_lost: 3
+  smoothing_alpha: 0.70
+
+  local_search_enabled: true
+  local_search_radius_factor: 0.20
+  local_search_scale_factors: [1.00]
+  local_search_offsets: [-1, 0, 1]
+
+  local_appearance_weight: 0.55
+  local_temporal_weight: 0.25
+  local_margin_weight: 0.20
+
+  local_min_similarity: 0.28
+  local_min_margin: 0.00
+  local_min_temporal_score: 0.20
+  local_min_final_score: 0.32
+
+  local_early_stop_enabled: true
+  local_early_stop_similarity: 0.42
+  local_early_stop_temporal_score: 0.55
+
+  force_detector_refresh_every_n_frames: 3
+  max_local_only_streak: 2
+
+  prefer_detector_when_available: true
+  detector_preference_delta: 0.02
+  detector_source_bonus: 0.02
+  local_source_penalty: 0.04
+
+  birth_min_score: 0.30
+  birth_min_margin: 0.00
+  birth_min_detector_conf: 0.00
+
+  tracked_min_detector_score: 0.25
+  tracked_min_detector_margin: 0.00
+
+  lost_min_detector_score: 0.28
+  lost_min_detector_margin: 0.00
+
+  cross_reference_iou_threshold: 0.70
+
+output:
+  max_detections_per_reference: 1
+  write_internal_json: true
+  write_official_json: true
+  official_object_key: detected_undefined_objects
+
+evaluation:
+  iou_threshold: 0.50
+  full_dataset_eval: true
+  save_per_reference_metrics: true
+  save_fp_fn_lists: true

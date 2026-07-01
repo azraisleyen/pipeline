@@ -1,0 +1,8 @@
+{
+  "created_at": "2026-07-01T19:32:19",
+  "source_dir": "/content/drive/MyDrive/dynamic_reference/dynamic_reference_system_v5.0.1",
+  "destination_root": "/content/teknofest-ai-pipeline",
+  "task3_destination": "/content/teknofest-ai-pipeline/third_party/dynamic_reference_system_v5_0_1",
+  "copied_file_count": 33,
+  "note": "Clean GitHub-ready Task 3 v5.0.1 repository base. Data, models, outputs and cache files are excluded."
+}

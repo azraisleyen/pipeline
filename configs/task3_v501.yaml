@@ -1,0 +1,16 @@
+task3_v501:
+  base_dir: third_party/dynamic_reference_system_v5_0_1
+  config_path: third_party/dynamic_reference_system_v5_0_1/configs/default.yaml
+  adapter_class: Task3V501Adapter
+
+  runtime:
+    initialize_once_per_session: true
+    keep_tracking_state: true
+    process_frame_by_frame: true
+
+  output:
+    official_key: detected_undefined_objects
+    include_debug_fields_in_official_output: false
+
+  cache:
+    recommendation: disable_global_cache_or_use_session_scoped_cache

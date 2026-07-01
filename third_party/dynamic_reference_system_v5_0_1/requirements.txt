@@ -1,0 +1,11 @@
+numpy
+opencv-python
+Pillow
+PyYAML
+torch
+torchvision
+ultralytics
+transformers
+kornia
+scipy
+tqdm

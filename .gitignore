@@ -1,0 +1,73 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# Data and datasets
+data/
+datasets/
+frames/
+videos/
+references/
+reference_images/
+annotations/
+
+# Outputs
+outputs/
+results/
+logs/
+cache/
+debug/
+visualizations/
+runs/
+wandb/
+
+# Model weights and binary artifacts
+models/
+downloaded_models/
+*.pt
+*.pth
+*.pth.tar
+*.onnx
+*.engine
+*.trt
+*.weights
+*.ckpt
+*.pkl
+*.pickle
+*.npy
+*.npz
+
+# Media
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.jpg
+*.jpeg
+*.png
+*.bmp
+*.tif
+*.tiff
+*.webp
+
+# Archives
+*.zip
+*.rar
+*.7z
+*.tar
+*.gz
+
+# OS
+.DS_Store
+Thumbs.db
