@@ -1,0 +1,9 @@
+model_paths:
+  task1:
+    human: models/task1/elcey.pt
+    vehicle: models/task1/vehicle.pt
+    uap_uai: models/task1/UAP_UAI_V2.pt
+    landing_classifier: models/task1/UAP_UAI_Classifier_resnet50_V4.1.pth
+  task2: {}
+  task3:
+    detector: third_party/dynamic_reference_system_v5_0_1/models/yolov8n.pt

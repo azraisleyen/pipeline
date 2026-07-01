@@ -1,0 +1,4 @@
+online:
+  base_url: ''
+  token_env: TEKNOFEST_API_TOKEN
+  timeout_seconds: 10
