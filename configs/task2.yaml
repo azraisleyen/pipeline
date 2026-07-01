@@ -1,0 +1,9 @@
+task2:
+  enabled: true
+  mode: stub
+  use_upstream_when_valid: true
+  keep_last_valid: true
+  default_translation:
+    translation_x: 0.0
+    translation_y: 0.0
+    translation_z: 0.0

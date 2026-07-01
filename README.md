@@ -1,75 +1,35 @@
 # TEKNOFEST 2026 Aviation AI Pipeline
 
-This repository is prepared for building a modular TEKNOFEST 2026 Aviation AI pipeline.
+Production-ready modular pipeline for frame-by-frame TEKNOFEST online simulation packets.
 
-The final target pipeline will combine:
+## Runtime flow
 
-1. Task 1 — Object detection, landing suitability, and vehicle motion status
-2. Task 2 — Position estimation
-3. Task 3 — Dynamic reference object matching
+`FrameContext -> Task1Module -> Task2Module -> Task3Module -> PacketBuilder -> SchemaValidation -> official JSON packet`
 
-At this stage, the repository includes the cleaned Task 3 v5.0.1 reference matching system under:
+## External models
 
-```text
-third_party/dynamic_reference_system_v5_0_1/
+Weights are intentionally not committed. Configure paths in `configs/model_paths.yaml` and place weights under:
+
+- `models/task1/elcey.pt`
+- `models/task1/vehicle.pt`
+- `models/task1/UAP_UAI_V2.pt`
+- `models/task1/UAP_UAI_Classifier_resnet50_V4.1.pth`
+
+Task 3 remains isolated under `third_party/dynamic_reference_system_v5_0_1/` and is integrated through `src/task3_reference/v501_adapter.py`.
+
+## Run
+
+```bash
+python scripts/run_single_frame.py path/to/frame.jpg
+python scripts/run_offline_dataset.py path/to/images
+python scripts/run_offline_video.py path/to/video.mp4 --max-frames 100
+python scripts/run_online_simulation.py
 ```
 
-## Current purpose
+For schema-only smoke runs without external weights, pass `--allow-missing-models` to local scripts.
 
-This repository is intentionally prepared as a clean GitHub-ready base for Codex review and later integration.
+## Test
 
-The Task 3 system should be integrated into the main pipeline through an adapter layer, not by directly using the standalone `run.py` or offline `VideoRunner` as the main runtime entry.
-
-## Planned integration
-
-The future main pipeline should use this structure:
-
-```text
-src/
-  common/
-  task1_detection/
-  task2_position/
-  task3_reference/
-  pipeline/
-  online/
-  evaluation/
+```bash
+pytest
 ```
-
-Task 3 should expose only:
-
-```python
-detected_undefined_objects = task3_module.process(frame_context)
-```
-
-The main packet builder will combine:
-
-```json
-{
-  "detected_objects": [],
-  "detected_translations": [],
-  "detected_undefined_objects": []
-}
-```
-
-## Important repository rules
-
-Model weights, videos, datasets, cache files, debug outputs, and generated result files are intentionally excluded from Git.
-
-Do not commit:
-
-```text
-*.pt
-*.pth
-*.pth.tar
-*.onnx
-*.mp4
-data/
-outputs/
-logs/
-cache/
-models/
-```
-
-## Next step
-
-After pushing this repository to GitHub, ask Codex to inspect the Task 3 v5.0.1 structure and identify the correct integration point for a `Task3V501Adapter`.

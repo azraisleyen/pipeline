@@ -1,0 +1,15 @@
+task1:
+  enabled: true
+  allow_missing_models: false
+  device: auto
+  imgsz: 1280
+  human_conf: 0.25
+  vehicle_conf: 0.40
+  landing_conf: 0.40
+  iou: 0.65
+  max_det: 500
+  extra_nms_iou: 0.75
+  motion_threshold_px: 12.0
+  motion_max_lost_frames: 5
+  classifier_positive_index: 1
+  flip_landing_classes: false

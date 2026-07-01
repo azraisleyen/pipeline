@@ -3,5 +3,4 @@ from pathlib import Path
 import sys
 ROOT=Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path: sys.path.insert(0,str(ROOT))
-from src.common.config_loader import ConfigLoader
-if __name__=='__main__': print('Loaded config sections:', sorted(ConfigLoader().load_all().keys()))
+print('Debug bundle export is intentionally environment-specific; packets are written by configured runners.')
