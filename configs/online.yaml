@@ -2,3 +2,10 @@ online:
   base_url: ''
   token_env: TEKNOFEST_API_TOKEN
   timeout_seconds: 10
+  fetch_endpoint: /frame
+  submit_endpoint: /packet
+  required: false
+  retry:
+    attempts: 3
+    backoff_seconds: 0.5
+    max_backoff_seconds: 5.0

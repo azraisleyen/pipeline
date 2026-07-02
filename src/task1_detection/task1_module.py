@@ -8,7 +8,7 @@ from .postprocess import make_object,nms_objects
 class Task1Module:
     def __init__(self, config, lazy=True):
         self.config=config; t=config.get('task1',{}); self.enabled=t.get('enabled',True); self.lazy=lazy; self.loaded=False
-        self.motion=VehicleMotionEstimator(t.get('motion_threshold_px',12.0), t.get('motion_max_lost_frames',5))
+        self.motion=VehicleMotionEstimator(t.get('motion_threshold_px',12.0), t.get('motion_max_lost_frames',5), t.get('motion_association_iou',0.15), t.get('motion_association_distance_px',96.0))
     def initialize(self):
         if self.loaded: return
         t=self.config.get('task1',{}); reg=ModelRegistry(self.config)
@@ -21,9 +21,10 @@ class Task1Module:
         if not self.loaded: self.initialize()
         if not self.enabled: return []
         objs=[]
-        for d in self.human.predict(context.frame): objs.append(make_object(CLASS_HUMAN,d['bbox']))
-        for d in self.vehicle.predict(context.frame): objs.append(make_object(CLASS_VEHICLE,d['bbox'],LANDING_NOT_APPLICABLE,self.motion.estimate(d['bbox'],context.frame_id)))
+        self.motion.begin_frame(context.frame_id)
+        for d in self.human.predict(context.frame): objs.append(make_object(CLASS_HUMAN,d['bbox'], score=d.get('score')))
+        for d in self.vehicle.predict(context.frame): objs.append(make_object(CLASS_VEHICLE,d['bbox'],LANDING_NOT_APPLICABLE,self.motion.estimate(d['bbox'],context.frame_id), score=d.get('score')))
         for d in self.landing.predict(context.frame):
-            cls=CLASS_UAP if int(d.get('model_cls',0))==0 else CLASS_UAI; bbox=tuple(map(int,d['bbox'])); objs.append(make_object(cls,bbox,self.classifier.classify(crop(context.frame,bbox)),MOTION_NOT_APPLICABLE))
+            cls=CLASS_UAP if int(d.get('model_cls',0))==0 else CLASS_UAI; bbox=tuple(map(int,d['bbox'])); objs.append(make_object(cls,bbox,self.classifier.classify(crop(context.frame,bbox)),MOTION_NOT_APPLICABLE, score=d.get('score')))
         return nms_objects(objs,self.config.get('task1',{}).get('extra_nms_iou',0.75))
     def reset(self): self.motion.reset(); self.loaded=False

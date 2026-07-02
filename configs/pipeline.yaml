@@ -1,4 +1,5 @@
 pipeline:
   enabled_tasks: [task1, task2, task3]
   validate_schema: true
+  startup_validation: true
   packet_user: ''
